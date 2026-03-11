@@ -1,4 +1,4 @@
-## Lekce 3 — Motory: Robot se hýbe!
+## Lekce 2 — Motory: Robot se hýbe!
 
 ### 📋 Cheatsheet
 
