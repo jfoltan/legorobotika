@@ -1,4 +1,4 @@
-## Lekce 4 — DriveBase: Řízení jako profík
+## Lekce 3 — DriveBase
 
 ### 📋 Cheatsheet
 
