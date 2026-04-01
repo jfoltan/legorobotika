@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git & GitHub – Průvodce pro kroužek robotiky</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #181b24;
+    --card: #1e2230;
+    --border: #2a2f40;
+    --accent: #f7c948;
+    --accent2: #38bdf8;
+    --accent3: #a78bfa;
+    --green: #4ade80;
+    --red: #fb7185;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --code-bg: #131620;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    padding: 4rem 2rem 3rem;
+    text-align: center;
+    background: linear-gradient(160deg, #1a1040 0%, #0f1117 50%, #0a1628 100%);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(247,201,72,.12) 0%, transparent 40%),
+      radial-gradient(circle at 80% 60%, rgba(56,189,248,.1) 0%, transparent 40%);
+  }
+  .hero-icons {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 900;
+    letter-spacing: -1px;
+    position: relative;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero .subtitle {
+    color: var(--muted);
+    font-size: 1.1rem;
+    margin-top: .6rem;
+    position: relative;
+  }
+  .hero .tags {
+    display: flex;
+    gap: .5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1.2rem;
+    position: relative;
+  }
+  .tag {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: .3rem .8rem;
+    border-radius: 99px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .78rem;
+    color: var(--accent2);
+  }
+
+  /* Nav tabs */
+  .nav {
+    display: flex;
+    gap: .4rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 1rem 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1rem;
+  }
+  .nav button {
+    background: var(--surface);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: .5rem 1rem;
+    border-radius: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: .85rem;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .nav button:hover { border-color: var(--accent2); color: var(--text); }
+  .nav button.active {
+    background: var(--accent2);
+    color: var(--bg);
+    border-color: var(--accent2);
+  }
+
+  /* Sections */
+  .container { max-width: 860px; margin: 0 auto; padding: 2rem 1.2rem 4rem; }
+  .section { display: none; animation: fadeIn .3s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  h2 {
+    font-size: 1.6rem;
+    font-weight: 900;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+  }
+  h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 1.5rem 0 .6rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; color: var(--text); }
+  .muted { color: var(--muted); }
+
+  /* Cards */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.4rem;
+    margin-bottom: 1.2rem;
+    transition: border-color .2s;
+  }
+  .card:hover { border-color: var(--accent2); }
+  .card-title {
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: .5rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+
+  /* Code blocks */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    overflow-x: auto;
+    margin: .8rem 0 1.2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .82rem;
+    line-height: 1.8;
+    position: relative;
+  }
+  pre .prompt { color: var(--green); user-select: none; }
+  pre .comment { color: #6b7280; font-style: italic; }
+  pre .flag { color: var(--accent3); }
+  pre .string { color: var(--accent); }
+  pre .output { color: var(--muted); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: .15rem .4rem;
+    border-radius: 4px;
+    font-size: .85rem;
+    color: var(--accent2);
+  }
+
+  /* Flow diagram */
+  .flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .3rem;
+    flex-wrap: wrap;
+    margin: 1.5rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .82rem;
+  }
+  .flow-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .5rem .9rem;
+    text-align: center;
+    min-width: 90px;
+  }
+  .flow-box.highlight { border-color: var(--accent); color: var(--accent); }
+  .flow-arrow { color: var(--muted); font-size: 1.2rem; }
+
+  /* Steps */
+  .step {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.4rem;
+    align-items: flex-start;
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent3));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: .9rem;
+    color: var(--bg);
+    margin-top: .2rem;
+  }
+  .step-content { flex: 1; }
+
+  /* Comparison table */
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0 1.5rem;
+  }
+  @media (max-width: 500px) { .comparison { grid-template-columns: 1fr; } }
+  .comp-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem;
+  }
+  .comp-card h4 {
+    font-size: 1rem;
+    margin-bottom: .5rem;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+  .comp-card ul { list-style: none; padding: 0; }
+  .comp-card li {
+    padding: .25rem 0;
+    color: var(--muted);
+    font-size: .9rem;
+  }
+  .comp-card li::before { content: '→ '; color: var(--accent2); }
+
+  /* Tip box */
+  .tip {
+    background: rgba(247,201,72,.06);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+    font-size: .92rem;
+  }
+  .tip strong { color: var(--accent); }
+
+  /* File tree */
+  .file-tree {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .82rem;
+    line-height: 2;
+    margin: .8rem 0 1.2rem;
+  }
+  .file-tree .folder { color: var(--accent2); }
+  .file-tree .file { color: var(--muted); }
+  .file-tree .git { color: var(--accent3); }
+  .file-tree .indent { padding-left: 1.5rem; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-icons">🤖 🔧 🐍</div>
+  <h1>Git & GitHub</h1>
+  <p class="subtitle">Průvodce pro kroužek LEGO robotiky</p>
+  <div class="tags">
+    <span class="tag">Python</span>
+    <span class="tag">Pybricks</span>
+    <span class="tag">VS Code</span>
+    <span class="tag">Git</span>
+    <span class="tag">GitHub</span>
+  </div>
+</div>
+
+<div class="nav" id="nav">
+  <button class="active" onclick="show('intro')">Co je Git?</button>
+  <button onclick="show('setup')">Instalace</button>
+  <button onclick="show('basics')">Základy</button>
+  <button onclick="show('github')">GitHub</button>
+  <button onclick="show('example')">Příklad</button>
+  <button onclick="show('cheatsheet')">Tahák</button>
+</div>
+
+<div class="container">
+
+<!-- ==================== INTRO ==================== -->
+<div class="section active" id="intro">
+  <h2>🧠 Co je Git a proč ho chceme?</h2>
+
+  <p>Představte si, že programujete robota, který jezdí po čáře. Máte kód, který funguje. Pak zkusíte přidat zatáčení — a najednou nefunguje nic. <strong>Ctrl+Z</strong> nepomáhá, protože jste mezitím uložili 10×.</p>
+
+  <p>Přesně tohle řeší <strong>Git</strong> — je to systém, který si pamatuje <em>každou verzi</em> vašeho kódu. Jako nekonečné „undo" tlačítko s popiskem, co jste kdy změnili.</p>
+
+  <div class="comparison">
+    <div class="comp-card">
+      <h4>📁 Bez Gitu</h4>
+      <ul>
+        <li>robot_v1.py</li>
+        <li>robot_v2_funguje.py</li>
+        <li>robot_FINAL.py</li>
+        <li>robot_FINAL_opravdu.py</li>
+        <li>robot_backup_stary.py</li>
+      </ul>
+    </div>
+    <div class="comp-card">
+      <h4>✨ S Gitem</h4>
+      <ul>
+        <li>Jeden soubor: main.py</li>
+        <li>Celá historie změn</li>
+        <li>Kdo co změnil a proč</li>
+        <li>Návrat k libovolné verzi</li>
+        <li>Bezpečné experimentování</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Git vs. GitHub</h3>
+  <div class="comparison">
+    <div class="comp-card">
+      <h4>🔧 Git</h4>
+      <ul>
+        <li>Program na vašem počítači</li>
+        <li>Ukládá historii změn</li>
+        <li>Funguje i offline</li>
+        <li>Zdarma a open-source</li>
+      </ul>
+    </div>
+    <div class="comp-card">
+      <h4>🌐 GitHub</h4>
+      <ul>
+        <li>Web, kam nahrajete kód</li>
+        <li>Sdílení s celým týmem</li>
+        <li>Záloha v cloudu</li>
+        <li>Zdarma pro studenty</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tip">
+    <strong>💡 Analogie:</strong> Git je jako <em>deník</em>, kam si zapisujete, co jste na robotu změnili. GitHub je jako <em>nástěnka</em> ve třídě, kam ten deník pověsíte, aby si ho přečetli i ostatní.
+  </div>
+</div>
+
+<!-- ==================== SETUP ==================== -->
+<div class="section" id="setup">
+  <h2>⚙️ Instalace a nastavení</h2>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <strong>Nainstalujte Git</strong>
+      <p>Stáhněte z <code>git-scm.com</code> a nainstalujte (výchozí nastavení stačí).</p>
+      <pre><span class="comment"># Ověření instalace (v terminálu VS Code)</span>
+<span class="prompt">$</span> git --version
+<span class="output">git version 2.44.0</span></pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <strong>Nastavte si jméno a email</strong>
+      <p>Git potřebuje vědět, kdo změny dělá:</p>
+      <pre><span class="prompt">$</span> git config --global user.name <span class="string">"Pepa Novák"</span>
+<span class="prompt">$</span> git config --global user.email <span class="string">"pepa@email.cz"</span></pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <strong>Vytvořte si účet na GitHubu</strong>
+      <p>Jděte na <code>github.com</code> → Sign up. Zdarma!</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <strong>VS Code rozšíření</strong>
+      <p>VS Code má Git podporu vestavěnou! Stačí otevřít panel <code>Source Control</code> (ikona větvičky vlevo).</p>
+    </div>
+  </div>
+
+  <div class="tip">
+    <strong>💡 Tip:</strong> Ve VS Code otevřete terminál přes <code>Ctrl + `</code> (backtick) — všechny git příkazy zadáváte sem.
+  </div>
+</div>
+
+<!-- ==================== BASICS ==================== -->
+<div class="section" id="basics">
+  <h2>📦 Základní příkazy</h2>
+
+  <h3>Jak Git funguje – 3 zóny</h3>
+  <div class="flow">
+    <div class="flow-box">📝 Pracovní<br>složka</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box highlight">📋 Stage<br>(připraveno)</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">💾 Repozitář<br>(historie)</div>
+  </div>
+  <p class="muted" style="text-align:center;font-size:.85rem;">Upravíte soubor → připravíte ho (<code>git add</code>) → uložíte do historie (<code>git commit</code>)</p>
+
+  <div class="card">
+    <div class="card-title">🆕 Založit nový repozitář</div>
+    <pre><span class="prompt">$</span> cd muj-robot
+<span class="prompt">$</span> git init
+<span class="output">Initialized empty Git repository in /muj-robot/.git/</span></pre>
+    <p class="muted">Spustíte jednou na začátku projektu. Vytvoří skrytou složku <code>.git</code>.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 Zjistit stav</div>
+    <pre><span class="prompt">$</span> git status
+<span class="output">Changes not staged for commit:
+  modified:   main.py</span></pre>
+    <p class="muted">Nejdůležitější příkaz! Ukazuje, co se změnilo.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">➕ Přidat soubory do stage</div>
+    <pre><span class="comment"># Přidat konkrétní soubor</span>
+<span class="prompt">$</span> git add main.py
+
+<span class="comment"># Přidat všechno</span>
+<span class="prompt">$</span> git add .</pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💾 Uložit do historie (commit)</div>
+    <pre><span class="prompt">$</span> git commit <span class="flag">-m</span> <span class="string">"Přidán PID regulátor pro jízdu po čáře"</span></pre>
+    <p class="muted">Zpráva za <code>-m</code> popisuje, CO jste změnili. Pište česky, stručně, ale srozumitelně!</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📜 Zobrazit historii</div>
+    <pre><span class="prompt">$</span> git log <span class="flag">--oneline</span>
+<span class="output">a3f2c1d Přidán PID regulátor pro jízdu po čáře
+b7e9a4f Základní jízda dopředu a dozadu
+1c0d3e2 První verze – inicializace motorů</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⏪ Vrátit se k předchozí verzi</div>
+    <pre><span class="comment"># Podívat se na starší verzi</span>
+<span class="prompt">$</span> git checkout b7e9a4f
+
+<span class="comment"># Vrátit se zpět na nejnovější</span>
+<span class="prompt">$</span> git checkout main</pre>
+  </div>
+
+  <div class="tip">
+    <strong>💡 Pravidlo:</strong> Commitujte často! Po každé funkční změně. Lepší 10 malých commitů než jeden obří.
+  </div>
+</div>
+
+<!-- ==================== GITHUB ==================== -->
+<div class="section" id="github">
+  <h2>🌐 GitHub – sdílení kódu</h2>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <strong>Vytvořte repozitář na GitHubu</strong>
+      <p>Na <code>github.com</code> klikněte <strong>New repository</strong> → pojmenujte ho (např. <code>lego-robot</code>) → Create.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <strong>Propojte lokální repozitář</strong>
+      <pre><span class="prompt">$</span> git remote add origin https://github.com/vas-ucet/lego-robot.git</pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <strong>Nahrajte kód (push)</strong>
+      <pre><span class="prompt">$</span> git push <span class="flag">-u</span> origin main</pre>
+      <p class="muted">Poprvé se Git zeptá na přihlášení do GitHubu.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <strong>Stáhnout změny od ostatních (pull)</strong>
+      <pre><span class="prompt">$</span> git pull</pre>
+      <p class="muted">Pokud kamarád něco změnil na GitHubu, tímto si stáhnete jeho změny.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-content">
+      <strong>Naklonovat existující projekt</strong>
+      <pre><span class="prompt">$</span> git clone https://github.com/vas-ucet/lego-robot.git</pre>
+      <p class="muted">Nový člen týmu si takto stáhne celý projekt i s historií.</p>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="flow-box">💻 Váš PC</div>
+    <div class="flow-arrow">push →</div>
+    <div class="flow-box highlight">☁️ GitHub</div>
+    <div class="flow-arrow">← pull</div>
+    <div class="flow-box">💻 Kamarádův PC</div>
+  </div>
+</div>
+
+<!-- ==================== EXAMPLE ==================== -->
+<div class="section" id="example">
+  <h2>🤖 Příklad: Projekt LEGO robota</h2>
+  <p>Pojďme projít reálný příklad – od nuly k funkčnímu projektu s Pybricks.</p>
+
+  <h3>Struktura projektu</h3>
+  <div class="file-tree">
+    <div><span class="folder">📁 lego-robot/</span></div>
+    <div class="indent"><span class="git">📄 .gitignore</span></div>
+    <div class="indent"><span class="file">📄 README.md</span></div>
+    <div class="indent"><span class="file">🐍 main.py</span></div>
+  </div>
+
+  <h3>Krok 1 – Založení projektu</h3>
+  <pre><span class="prompt">$</span> mkdir lego-robot
+<span class="prompt">$</span> cd lego-robot
+<span class="prompt">$</span> git init</pre>
+
+  <h3>Krok 2 – Soubor .gitignore</h3>
+  <p>Řekneme Gitu, které soubory NEMÁ sledovat:</p>
+  <pre><span class="comment"># .gitignore</span>
+__pycache__/
+*.pyc
+.vscode/
+.pybricks/</pre>
+
+  <h3>Krok 3 – První kód robota</h3>
+  <pre><span class="comment"># main.py – Základní jízda</span>
+from pybricks.hubs import PrimeHub
+from pybricks.pupdevices import Motor
+from pybricks.parameters import Port, Direction
+from pybricks.tools import wait
+
+hub = PrimeHub()
+
+<span class="comment"># Motory</span>
+levy_motor = Motor(Port.A)
+pravy_motor = Motor(Port.B, Direction.COUNTERCLOCKWISE)
+
+<span class="comment"># Jeď dopředu 2 sekundy</span>
+levy_motor.run(500)
+pravy_motor.run(500)
+wait(2000)
+
+<span class="comment"># Zastav</span>
+levy_motor.stop()
+pravy_motor.stop()
+
+hub.speaker.beep()</pre>
+
+  <h3>Krok 4 – První commit</h3>
+  <pre><span class="prompt">$</span> git add .
+<span class="prompt">$</span> git commit <span class="flag">-m</span> <span class="string">"Základní jízda dopředu na 2 sekundy"</span></pre>
+
+  <h3>Krok 5 – Přidáme sledování čáry</h3>
+  <pre><span class="comment"># main.py – Přidáme senzor a PID</span>
+from pybricks.hubs import PrimeHub
+from pybricks.pupdevices import Motor, ColorSensor
+from pybricks.parameters import Port, Direction
+from pybricks.tools import wait
+
+hub = PrimeHub()
+
+levy_motor = Motor(Port.A)
+pravy_motor = Motor(Port.B, Direction.COUNTERCLOCKWISE)
+senzor = ColorSensor(Port.C)
+
+<span class="comment"># PID konstanty</span>
+ZAKLADNI_RYCHLOST = 300
+KP = 1.2
+
+<span class="comment"># Sledování čáry</span>
+while True:
+    odrazivost = senzor.reflection()
+    chyba = odrazivost - 50  <span class="comment"># 50 = ideální hodnota</span>
+    korekce = KP * chyba
+
+    levy_motor.run(ZAKLADNI_RYCHLOST + korekce)
+    pravy_motor.run(ZAKLADNI_RYCHLOST - korekce)
+
+    wait(10)</pre>
+
+  <h3>Krok 6 – Commit a push</h3>
+  <pre><span class="prompt">$</span> git add main.py
+<span class="prompt">$</span> git status
+<span class="output">Changes to be committed:
+  modified:   main.py</span>
+
+<span class="prompt">$</span> git commit <span class="flag">-m</span> <span class="string">"Přidáno sledování čáry s P regulátorem"</span>
+<span class="prompt">$</span> git push</pre>
+
+  <h3>Krok 7 – Uups, nefunguje! Návrat zpět</h3>
+  <pre><span class="comment"># Podívám se do historie</span>
+<span class="prompt">$</span> git log <span class="flag">--oneline</span>
+<span class="output">c4a8f2b Přidáno sledování čáry s P regulátorem
+a1b3d5e Základní jízda dopředu na 2 sekundy</span>
+
+<span class="comment"># Vrátím se ke staré verzi</span>
+<span class="prompt">$</span> git checkout a1b3d5e
+
+<span class="comment"># Funguje! Vrátím se zpět a opravím novou verzi</span>
+<span class="prompt">$</span> git checkout main</pre>
+
+  <div class="tip">
+    <strong>💡 Reálný scénář:</strong> Na soutěži potřebujete rychle přepnout mezi programem pro jízdu po čáře a programem pro bludiště. S Gitem to zvládnete jedním příkazem!
+  </div>
+</div>
+
+<!-- ==================== CHEATSHEET ==================== -->
+<div class="section" id="cheatsheet">
+  <h2>📋 Tahák – nejdůležitější příkazy</h2>
+
+  <div class="card">
+    <div class="card-title">🏁 Začátek</div>
+    <pre><span class="prompt">$</span> git init                   <span class="comment"># Nový repozitář</span>
+<span class="prompt">$</span> git clone &lt;url&gt;             <span class="comment"># Stáhnout existující</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💾 Ukládání změn</div>
+    <pre><span class="prompt">$</span> git status                  <span class="comment"># Co se změnilo?</span>
+<span class="prompt">$</span> git add .                   <span class="comment"># Připravit vše</span>
+<span class="prompt">$</span> git commit -m "popis"       <span class="comment"># Uložit do historie</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🌐 Sdílení (GitHub)</div>
+    <pre><span class="prompt">$</span> git push                    <span class="comment"># Nahrát na GitHub</span>
+<span class="prompt">$</span> git pull                    <span class="comment"># Stáhnout z GitHubu</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔍 Prohlížení</div>
+    <pre><span class="prompt">$</span> git log --oneline           <span class="comment"># Historie</span>
+<span class="prompt">$</span> git diff                    <span class="comment"># Co jsem změnil?</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⏪ Záchrana</div>
+    <pre><span class="prompt">$</span> git checkout &lt;hash&gt;         <span class="comment"># Návrat k verzi</span>
+<span class="prompt">$</span> git checkout main           <span class="comment"># Zpět na nejnovější</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔄 Denní workflow</div>
+    <pre><span class="comment"># Ráno (stáhni novinky)</span>
+<span class="prompt">$</span> git pull
+
+<span class="comment"># Programuj... testuj... funguje!</span>
+
+<span class="comment"># Ulož práci</span>
+<span class="prompt">$</span> git add .
+<span class="prompt">$</span> git commit -m <span class="string">"Vylepšen PID regulátor"</span>
+<span class="prompt">$</span> git push</pre>
+  </div>
+
+  <div class="tip">
+    <strong>💡 Zlaté pravidlo:</strong> <code>git status</code> → <code>git add .</code> → <code>git commit -m "..."</code> → <code>git push</code>. Tohle je 90 % práce s Gitem!
+  </div>
+</div>
+
+</div><!-- container -->
+
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const nav = document.getElementById('nav');
+  const buttons = nav.querySelectorAll('button');
+  const ids = ['intro','setup','basics','github','example','cheatsheet'];
+  buttons[ids.indexOf(id)].classList.add('active');
+  window.scrollTo({ top: nav.offsetTop - 10, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
